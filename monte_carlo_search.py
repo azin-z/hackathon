@@ -8,8 +8,7 @@ import sys
 import random
 import subprocess
 import time
-import threading
-import queue
+import multiprocessing
 
 num_threads = int(sys.argv[1])
 input_problem_pickle = sys.argv[2]
@@ -20,7 +19,7 @@ print(input_problem_pickle)
 print(output_solution_pickle)
 
 initial_best_solution = None
-solution_queue = queue.Queue(0)
+solution_queue = multiprocessing.Queue(0)
 
 def generate_libray_permutation(n):
 	order = []
@@ -70,11 +69,11 @@ score_solution.fill_books_and_score(task, new_solution)
 end_time = time.time()
 print("One iteration takes " + str(end_time - start_time) + " seconds")
 
-write_thread = threading.Thread(target=run_pick_best)
+write_thread = multiprocessing.Process(target=run_pick_best)
 write_thread.start()
 
 for i in range(0, num_threads):
-	threadi = threading.Thread(target=run_montecarlo)
+	threadi = multiprocessing.Process(target=run_montecarlo)
 	threadi.start()
 
 while True:
