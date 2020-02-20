@@ -32,7 +32,7 @@ for file in files:
 
     task = Task(num_of_books=num_of_books, num_of_libraries=num_of_libraries, scanning_days=scanning_days, libraries=libraries, book_scores=book_scores)
 
-    pickle_out = open( file + ".pickle", "wb")
+    pickle_out = open('task_pickles/' + file + ".pickle", "wb")
     pickle.dump(task, pickle_out)
     pickle_out.close()
 
