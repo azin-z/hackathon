@@ -43,7 +43,7 @@ def fill_books_and_score(task, solution):
 		print("error solving the flow?")
 		print(solved)
 	solution.books_per_library = []
-	for i in range(0, len(solution.lib_ordering)):
+	for i in range(0, len(task.libraries)):
 		solution.books_per_library.append([])
 	solution.scores = 0
 	for i in range(min_cost_flow.NumArcs()):
