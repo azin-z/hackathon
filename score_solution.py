@@ -15,11 +15,10 @@ def fill_books_and_score(task, solution):
 	source_node = 0
 	sink_node = 1
 	next_node = 2
-	supply = 1000000000000000000 # big number
-	supplies = [0, -0]
+	supplies = []
 	start_nodes.append(sink_node)
 	end_nodes.append(source_node)
-	capacities.append(100000000000)
+	capacities.append(len(task.book_scores))
 	unit_costs.append(0)
 	for book in range(len(task.book_scores)):
 		book_node[book] = next_node
@@ -30,7 +29,9 @@ def fill_books_and_score(task, solution):
 		unit_costs.append(-task.book_scores[book])
 	for lib in solution.lib_ordering:
 		current_day += task.libraries[lib].sign_up_duration
+		if current_day > task.scanning_days: break
 		books_from_here = (task.scanning_days - current_day) * task.libraries[lib].books_per_day_shipping
+		if books_from_here <= 0: break
 		library_nodes[lib] = next_node
 		next_node += 1
 		start_nodes.append(source_node)
@@ -42,7 +43,7 @@ def fill_books_and_score(task, solution):
 			end_nodes.append(book_node[book])
 			capacities.append(1)
 			unit_costs.append(0)
-	for i in range(2, next_node):
+	for i in range(0, next_node):
 		supplies.append(0)
 	rev_library_node = {}
 	rev_book_node = {}
@@ -55,6 +56,10 @@ def fill_books_and_score(task, solution):
 		min_cost_flow.AddArcWithCapacityAndUnitCost(start_nodes[i], end_nodes[i], capacities[i], unit_costs[i])
 	for i in range(0, len(supplies)):
 		min_cost_flow.SetNodeSupply(i, supplies[i])
+	assert len(start_nodes) == len(end_nodes)
+	assert len(end_nodes) == len(capacities)
+	assert len(capacities) == len(unit_costs)
+	assert len(supplies) == next_node
 	solved = min_cost_flow.SolveMaxFlowWithMinCost()
 	if solved != min_cost_flow.OPTIMAL:
 		print("error solving the flow?")
